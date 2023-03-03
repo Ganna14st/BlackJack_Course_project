@@ -4,7 +4,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 continue_game = True
-
+# TODO restart
 
 # make 52 cards deck
 vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A']
@@ -51,8 +51,8 @@ def start_game():
 
     dealer_label.config(text='Dealer cards', background='#5D9C59')
     player_label.config(text='Your cards', background='#5D9C59')
-    dealer_view.config(text=dealer.__str__(), background='#5D9C59')
-    player_view.config(text=player.__str__(), background='#5D9C59')
+    dealer_view.config(text=dealer, background='#5D9C59')
+    player_view.config(text=player, background='#5D9C59')
     hit_button = Button(window, text='Hit', borderwidth=0, highlightthickness=0, command=take_more)
     stand_button = Button(window, text='Stand', borderwidth=0, highlightthickness=0, command=check_dealer)
 
@@ -69,7 +69,7 @@ def take_more():
     deck.remove(add)
     player.cards_set.append(add)
     player_score = player.sum_cards()
-    player_view.config(text=player.__str__())
+    player_view.config(text=player)
     print(f"you've got a {player.cards_set[-1]}. Your cards are {player.cards_set}, current score is {player_score}")
     if_blackjack()
 
@@ -77,9 +77,9 @@ def take_more():
 def win_or_loose(result):
     global continue_game
     if result == 'win':
-        text = 'GAME OVER   YOU WON    😎'
+        text = 'GAME OVER\tYOU WON\t😎'
     else:
-        text = 'GAME OVER    YOU LOOSE    😩'
+        text = 'GAME OVER\tYOU LOOSE\t😩'
     print(f"player cards is {player.cards_set}, dealer cards is {dealer.cards_set}")
     dealer_view.config(text='Dealers cards are {}, score is {}'.format(dealer.cards_set, dealer.sum_cards()))
     game_over.place(x=100, y=100)
@@ -92,9 +92,9 @@ def if_blackjack():
     dealer_score = dealer.sum_cards()
     player_score = player.sum_cards()
     if player_score > 21 or dealer_score == 21:
-        win_or_loose(result='win')
-    elif player_score == 21 or dealer_score == 21:
         win_or_loose(result='loose')
+    elif player_score == 21:
+        win_or_loose(result='win')
     else:
         continue_game = True
     return continue_game
@@ -102,17 +102,16 @@ def if_blackjack():
 
 def compare(score1, score2):
     global continue_game
-    if (21 - score1) == (21 - score2):
+    if 21 - score1 == 21 - score2:
         print(f"Your score is {score1}, dealer score is {score2} Its a draw")
         continue_game = False
-    elif (21 - score1) < (21 - score2):
+    elif 21 - score1 < 21 - score2:
         win_or_loose(result='win')
     else:
         pass
 
 
 def check_dealer():
-    # TODO fix bug when STAND and 16 < dealer.sum_cards() < 21
     if dealer.sum_cards() < 16:
         add = random.choice(deck)
         deck.remove(add)
